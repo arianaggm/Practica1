@@ -1,0 +1,187 @@
+; TODO INSERT CONFIG CODE HERE USING CONFIG BITS GENERATOR
+
+#include "config.h"
+#include "segmentos.h"
+    
+#define var_x 0x00
+#define var_y 0x01
+#define CONT1 0x02
+#define CONT2 0x03
+#define button_pin 7 ;actualmente pin 7 en el pic, se puede cambiar
+    
+RES_VECT  CODE    0x0000            ; processor reset vector
+    GOTO    START                   ; go to beginning of program
+
+; TODO ADD INTERRUPTS HERE IF USED
+
+MAIN_PROG CODE   0x0020                    ; let linker place main program
+ 
+START
+ CALL DELAY1
+;Configurar los puertos
+SETF TRISB ;Puerto B como entrada 
+CLRF TRISD ;Puerto D como salida
+;-----------------
+ CALL CHECK_BUTTON        ;llama al valor                  
+ MOVFF var_x, var_y ;se mueve
+ CALL DELAY1
+ CALL CHECK_BUTTON ;se llama al segundo valor
+ MOVF var_x, aw
+ SUBWF var_y, aw
+ MOVWF var_x
+ CALL show7disp
+ GOTO $
+ 
+;funciones
+ DELAY1
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+    CALL DELAY2
+ RETURN
+ 
+ DELAY2
+    MOVLW .13
+    MOVWF CONT1
+ CYCLE1
+    MOVLW .255
+    MOVWF CONT2
+ CYCLE2
+    DECFSZ CONT2
+    BRA CYCLE2
+    DECFSZ CONT1
+    BRA CYCLE1
+    RETURN
+ 
+ CHECK_BUTTON
+    MOVF PORTB,w ;Lee el puerto B
+    ANDLW 0x0F ;Borra la parte alta.
+    MOVWF var_x ;Guarda la variable en la dir x
+;----Compara con números del 0 al 15
+    CALL show7disp
+    BTFSS PORTB, button_pin ;llamar al boton
+    GOTO CHECK_BUTTON
+ return 
+
+show7disp
+    MOVLW 0 ;mueve 0 a w
+    CPFSEQ var_x ;compara w con x, salta si es igual
+    GOTO next1
+    MOVLW disp0 ;Mueve el código 0 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next1
+    MOVLW 1 ;mueve 1 a w
+    CPFSEQ var_x
+    GOTO next2
+    MOVLW disp1 ;Mueve el código 0 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next2
+    MOVLW 2 ;mueve 2 a w
+    CPFSEQ var_x
+    GOTO next3
+    MOVLW disp2 ;Mueve el código 2 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next3
+    MOVLW 3 ;mueve 3 a w
+    CPFSEQ var_x
+    GOTO next4
+    MOVLW disp3 ;Mueve el código 3 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next4
+    MOVLW 4 ;mueve 0 a w
+    CPFSEQ var_x
+    GOTO next5
+    MOVLW disp4 ;Mueve el código 4 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next5
+    MOVLW 5 ;mueve 5 a w
+    CPFSEQ var_x
+    GOTO next6
+    MOVLW disp5 ;Mueve el código 5 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next6
+    MOVLW 6 ;mueve 6 a w
+    CPFSEQ var_x
+    GOTO next7
+    MOVLW disp6 ;Mueve el código 6 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next7
+    MOVLW 7 ;mueve 7 a w
+    CPFSEQ var_x
+    GOTO next8
+    MOVLW disp7 ;Mueve el código 7 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next8
+    MOVLW 8 ;mueve 0 a w
+    CPFSEQ var_x
+    GOTO next9
+    MOVLW disp8 ;Mueve el código 0 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+next9
+    MOVLW 9 ;mueve 0 a w
+    CPFSEQ var_x
+    GOTO nextA
+    MOVLW disp9 ;Mueve el código 9 a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+nextA
+    MOVLW 0x0A ;mueve A a w
+    CPFSEQ var_x
+    GOTO nextB
+    MOVLW dispA ;Mueve el código A a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+nextB
+    MOVLW 0x0B ;mueve A a w
+    CPFSEQ var_x
+    GOTO nextC
+    MOVLW dispB ;Mueve el código A a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+nextC
+    MOVLW 0x0C ;mueve A a w
+    CPFSEQ var_x
+    GOTO nextD
+    MOVLW dispC ;Mueve el código A a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+nextD
+    MOVLW 0x0D ;mueve A a w
+    CPFSEQ var_x
+    GOTO nextE
+    MOVLW dispD ;Mueve el código A a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+nextE
+    MOVLW 0x0E ;mueve A a w
+    CPFSEQ var_x
+    GOTO nextF
+    MOVLW dispE ;Mueve el código A a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+nextF
+    MOVLW 0x0F ;mueve A a w
+    CPFSEQ var_x
+    GOTO START
+    MOVLW dispF ;Mueve el código A a w
+    MOVWF PORTD ;Mueve w al puerto D
+    return
+ 
+
+
+    END
